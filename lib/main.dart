@@ -10,6 +10,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ProgressButtonDemo(),
       ),
@@ -17,7 +18,7 @@ class App extends StatelessWidget {
   }
 }
 
-const double kStep = 2.0;
+const double kStep = 5.0;
 
 class ProgressButtonDemo extends StatefulWidget {
   @override
