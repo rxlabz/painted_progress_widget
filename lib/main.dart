@@ -18,7 +18,7 @@ class App extends StatelessWidget {
   }
 }
 
-const double kStep = 5.0;
+const double kStep = 2.0;
 
 class ProgressButtonDemo extends StatefulWidget {
   @override
@@ -30,14 +30,15 @@ class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
   Timer timer;
 
   void start() {
-    if (progress == 100.0) setState(() => progress = 0.0);
-
-    timer = Timer.periodic(Duration(milliseconds: 50), (t) {
-      if (progress == 100.0)
-        t.cancel();
-      else
-        setState(() => progress = progress + kStep);
-    });
+    if (progress == 100.0)
+      setState(() => progress = 0.0);
+    else
+      timer = Timer.periodic(Duration(milliseconds: 50), (t) {
+        if (progress == 100.0)
+          t.cancel();
+        else
+          setState(() => progress = progress + kStep);
+      });
   }
 
   @override

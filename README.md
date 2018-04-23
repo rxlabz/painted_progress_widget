@@ -2,7 +2,7 @@
 
 An example of widget painting with CustomPaint Widget
 
-
+![preview](preview.gif)
 
 ___
 

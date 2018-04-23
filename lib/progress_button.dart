@@ -4,6 +4,10 @@ import 'package:flutter/widgets.dart';
 class ProgressButton extends StatefulWidget {
   final double percentProgress;
   final Size size;
+  final Color primaryColor;
+  final Color progressColor;
+  final Color backgroundColor;
+  final Color contrastColor;
   final VoidCallback onPressed;
 
   bool get started => percentProgress > 0;
@@ -12,22 +16,29 @@ class ProgressButton extends StatefulWidget {
       {Key key,
       this.percentProgress,
       this.size: const Size(64.0, 64.0),
+      this.primaryColor: Colors.cyan,
+      this.backgroundColor: Colors.cyan,
+      this.contrastColor: Colors.white,
+      this.progressColor: Colors.lime,
       this.onPressed})
       : super(key: key);
 
   @override
-  ProgressButtonState createState() {
-    return new ProgressButtonState();
+  _ProgressButtonState createState() {
+    return new _ProgressButtonState();
   }
 }
 
-class ProgressButtonState extends State<ProgressButton>
+class _ProgressButtonState extends State<ProgressButton>
     with TickerProviderStateMixin {
   AnimationController _controller;
 
   RectTween innerRectTween;
 
-  ProgressButtonState();
+  ColorTween primaryColorTween;
+  ColorTween endColorTween;
+
+  _ProgressButtonState();
 
   final padding = Offset(10.0, 10.0);
 
@@ -46,10 +57,7 @@ class ProgressButtonState extends State<ProgressButton>
       vsync: this,
       duration: const Duration(milliseconds: 166),
       value: 0.0,
-    )..addListener(() {
-        print('_controller.value ${_controller.value} $innerRect');
-        setState(() => innerRect = innerRectTween.evaluate(_controller));
-      });
+    );
 
     initTweens();
   }
@@ -59,25 +67,28 @@ class ProgressButtonState extends State<ProgressButton>
     if (widget.percentProgress > 0 && _controller.isDismissed)
       _controller.forward();
 
-    if (widget.percentProgress >= 100) {
-      print('widget.percentProgress >= 100... ${widget.percentProgress}');
-      _controller.reverse();
-    }
+    if (widget.percentProgress >= 100) _controller.reverse();
+
     super.didUpdateWidget(oldWidget);
   }
 
   void initTweens() {
     innerRectTween =
         new RectTween(begin: Offset.zero & widget.size, end: maxInnerRect);
-    /*primaryColorTween =
-    new ColorTween(begin: widget.primaryColor, end: widget.secondaryColor);
 
-    secondaryColorTween =
-    new ColorTween(begin: widget.secondaryColor, end: widget.primaryColor);*/
+    primaryColorTween =
+        new ColorTween(begin: widget.primaryColor, end: widget.contrastColor);
+
+    endColorTween =
+        new ColorTween(begin: widget.progressColor, end: widget.contrastColor);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentFillColor = widget.percentProgress < 100
+        ? primaryColorTween.evaluate(_controller)
+        : endColorTween.evaluate(_controller);
+
     return InkWell(
         onTap: widget.onPressed,
         child: Container(
@@ -85,34 +96,46 @@ class ProgressButtonState extends State<ProgressButton>
           height: widget.size.height,
           child: Stack(children: [
             CustomPaint(
-              painter: ProgressButtonPainter(
-                  progress: widget.percentProgress, innerRect: innerRect),
+              painter: _ProgressButtonPainter(
+                progress: widget.percentProgress,
+                innerRect: innerRectTween.evaluate(_controller),
+                fillColor: currentFillColor,
+                progressColor: widget.progressColor,
+                backgroundColor: widget.backgroundColor,
+              ),
               size: widget.size,
             ),
             Center(
                 child: widget.percentProgress < 100
-                    ? Text(widget.started
-                        ? widget.percentProgress.toInt().toString()
-                        : "Start")
-                    : Icon(Icons.check))
+                    ? _buildLabel(widget.percentProgress)
+                    : Icon(Icons.check, color: Colors.white))
           ]),
         ));
   }
+
+  Widget _buildLabel(double percent) => widget.started
+      ? Text("${percent.toInt()} %",
+          style: TextStyle(color: widget.primaryColor))
+      : Text(
+          "Start",
+          style: TextStyle(color: widget.contrastColor),
+        );
 }
 
-class ProgressButtonPainter extends CustomPainter {
+class _ProgressButtonPainter extends CustomPainter {
   final double progress;
   final Color fillColor;
   final Color progressColor;
   final Color backgroundColor;
   final Rect innerRect;
 
-  ProgressButtonPainter(
-      {this.progress,
-      this.fillColor: Colors.white,
-      this.backgroundColor: Colors.cyan,
-      this.progressColor: Colors.lime,
-      this.innerRect});
+  _ProgressButtonPainter({
+    this.progress,
+    this.fillColor: Colors.cyan,
+    this.backgroundColor: Colors.cyan,
+    this.progressColor: Colors.lime,
+    this.innerRect,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -134,9 +157,6 @@ class ProgressButtonPainter extends CustomPainter {
             Offset.zero, Offset(size.width * progress / 100, size.height)),
         progressFill);
 
-    /*final padding = Offset(10.0, 10.0);
-    final innerRect = (Offset.zero + padding) & (size - (padding + padding));*/
-
     if (progress > 0.0 && progress < 100.0)
       canvas.drawShadow(Path()..addRect(innerRect), Colors.black, 2.0, true);
 
@@ -147,7 +167,7 @@ class ProgressButtonPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ProgressButtonPainter oldDelegate) {
+  bool shouldRepaint(_ProgressButtonPainter oldDelegate) {
     return oldDelegate.progress != progress ||
         oldDelegate.fillColor != fillColor ||
         oldDelegate.innerRect != innerRect ||
