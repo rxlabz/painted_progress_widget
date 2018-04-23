@@ -57,7 +57,9 @@ class _ProgressButtonState extends State<ProgressButton>
       vsync: this,
       duration: const Duration(milliseconds: 166),
       value: 0.0,
-    );
+    )..addListener(() {
+        setState(() => innerRect = innerRectTween.evaluate(_controller));
+      });
 
     initTweens();
   }
@@ -98,7 +100,7 @@ class _ProgressButtonState extends State<ProgressButton>
             CustomPaint(
               painter: _ProgressButtonPainter(
                 progress: widget.percentProgress,
-                innerRect: innerRectTween.evaluate(_controller),
+                innerRect: innerRect,
                 fillColor: currentFillColor,
                 progressColor: widget.progressColor,
                 backgroundColor: widget.backgroundColor,
