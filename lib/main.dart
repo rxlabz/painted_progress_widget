@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'ProgressButton.dart';
+
 void main() => runApp(new App());
 
 class App extends StatelessWidget {
@@ -26,7 +28,9 @@ class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
     return new Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text("${progress.round()} %"),
+        ProgressButton(
+          percentProgress: progress,
+        ),
         Slider(
           value: progress,
           min: 0.0,
