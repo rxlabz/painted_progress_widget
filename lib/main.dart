@@ -42,12 +42,6 @@ class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    if (timer != null) timer.cancel();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return new Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,5 +59,11 @@ class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (timer != null) timer.cancel();
   }
 }
