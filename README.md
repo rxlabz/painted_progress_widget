@@ -1,10 +1,10 @@
 # painted progress button
 
-An example of Flutter animated widget based on a [CustomPainter](https://docs.flutter.io/flutter/rendering/CustomPainter-class.html).
+An [example of Flutter animated widget](https://github.com/rxlabz/painted_progress_widget/) based on a [CustomPainter](https://docs.flutter.io/flutter/rendering/CustomPainter-class.html).
+
+## Step 1
 
 ![preview](img/step1.png)
-
-Step 1
 
 ```dart
 import 'package:flutter/material.dart';
