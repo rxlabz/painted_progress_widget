@@ -2,9 +2,9 @@
 
 An [example of Flutter animated widget](https://github.com/rxlabz/painted_progress_widget/) based on a [CustomPainter](https://docs.flutter.io/flutter/rendering/CustomPainter-class.html).
 
-## Step 1
+## Step 2
 
-![preview](img/step1.png)
+![preview](img/step2.png)
 
 ```dart
 import 'package:flutter/material.dart';
