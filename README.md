@@ -2,62 +2,51 @@
 
 An example of Flutter animated widget based on a [CustomPainter](https://docs.flutter.io/flutter/rendering/CustomPainter-class.html).
 
-![preview](preview.gif)
+![preview](img/step1.png)
+
+Step 1
 
 ```dart
-class _ProgressButtonPainter extends CustomPainter {
-  final double progress;
-  final Color fillColor;
-  final Color progressColor;
-  final Color backgroundColor;
-  final Rect innerRect;
+import 'package:flutter/material.dart';
 
-  _ProgressButtonPainter({
-    this.progress,
-    this.fillColor: Colors.cyan,
-    this.backgroundColor: Colors.cyan,
-    this.progressColor: Colors.lime,
-    this.innerRect,
-  });
+void main() => runApp(new App());
 
+class App extends StatelessWidget {
   @override
-  void paint(Canvas canvas, Size size) {
-    final fillRect = Offset.zero & size;
-
-    if (progress == 0.0 || progress == 100.0)
-      canvas.drawShadow(Path()..addRect(fillRect), Colors.black, 2.0, true);
-
-    final fill = Paint()
-      ..style = PaintingStyle.fill
-      ..color = backgroundColor;
-    canvas.drawRect(fillRect, fill);
-
-    final progressFill = Paint()
-      ..style = PaintingStyle.fill
-      ..color = progressColor;
-    canvas.drawRect(
-        new Rect.fromPoints(
-            Offset.zero, Offset(size.width * progress / 100, size.height)),
-        progressFill);
-
-    if (progress > 0.0 && progress < 100.0)
-      canvas.drawShadow(Path()..addRect(innerRect), Colors.black, 2.0, true);
-
-    final innerFill = Paint()
-      ..style = PaintingStyle.fill
-      ..color = fillColor;
-    canvas.drawRect(innerRect, innerFill);
-  }
-
-  @override
-  bool shouldRepaint(_ProgressButtonPainter oldDelegate) {
-    return oldDelegate.progress != progress ||
-        oldDelegate.fillColor != fillColor ||
-        oldDelegate.innerRect != innerRect ||
-        oldDelegate.progressColor != progressColor ||
-        oldDelegate.backgroundColor != backgroundColor;
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: ProgressButtonDemo(),
+      ),
+    );
   }
 }
+
+class ProgressButtonDemo extends StatefulWidget {
+  @override
+  _ProgressButtonDemoState createState() => new _ProgressButtonDemoState();
+}
+
+class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
+  double progress = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text("${progress.round()} %"),
+        Slider(
+          value: progress,
+          min: 0.0,
+          max: 100.0,
+          onChanged: (double value) => setState(() => progress = value),
+        )
+      ],
+    );
+  }
+}
+
 ```
 
 ___
