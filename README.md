@@ -7,45 +7,43 @@ An [example of Flutter animated widget](https://github.com/rxlabz/painted_progre
 ![preview](img/step2.png)
 
 ```dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-void main() => runApp(new App());
+class ProgressButton extends StatelessWidget {
+  final double percentProgress;
+  final Size size;
+  final Color primaryColor;
+  final Color contrastColor;
 
-class App extends StatelessWidget {
+  ProgressButton({
+    Key key,
+    @required this.percentProgress,
+    this.size: const Size(64.0, 64.0),
+    this.primaryColor: Colors.cyan,
+    this.contrastColor: Colors.white,
+  }) : super(key: key) {
+    assert(percentProgress != null);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: ProgressButtonDemo(),
-      ),
+    return Container(
+      color: primaryColor,
+      width: size.width,
+      height: size.height,
+      child: Stack(children: [
+        Center(
+            child: Text(
+          '${percentProgress.round()} %',
+          style: TextStyle(color: contrastColor),
+        ))
+      ]),
     );
   }
 }
 
-class ProgressButtonDemo extends StatefulWidget {
-  @override
-  _ProgressButtonDemoState createState() => new _ProgressButtonDemoState();
-}
-
-class _ProgressButtonDemoState extends State<ProgressButtonDemo> {
-  double progress = 0.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text("${progress.round()} %"),
-        Slider(
-          value: progress,
-          min: 0.0,
-          max: 100.0,
-          onChanged: (double value) => setState(() => progress = value),
-        )
-      ],
-    );
-  }
-}
 
 ```
 
